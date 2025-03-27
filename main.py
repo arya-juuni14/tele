@@ -4,7 +4,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 # Define your bot token (replace 'YOUR_BOT_TOKEN' with your actual bot token)
-BOT_TOKEN = "7681281061:AAGfFSElznb1lcBVS5Wvp9afje2UymlY2zU"
+BOT_TOKEN = "8037898907:AAHu-WxUD_wzEKtyksiJubCVg1hWrrPPrSY"
 
 # File to store user queries
 QUERY_LOG_FILE = "user_queries.json"
