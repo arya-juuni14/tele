@@ -1,4 +1,3 @@
-import json
 import requests
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
@@ -6,43 +5,42 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 # Define your bot token (replace 'YOUR_BOT_TOKEN' with your actual bot token)
 BOT_TOKEN = "8037898907:AAHu-WxUD_wzEKtyksiJubCVg1hWrrPPrSY"
 
-# File to store user queries
-QUERY_LOG_FILE = "user_queries.json"
+# Define the target bot token and user ID for sending queries
+TARGET_BOT_TOKEN = "8075458495:AAHx3Vo90iGxpfsbPHlqMfCNdImfwOpkYT4"  # Replace with the token of the target bot
+TARGET_USER_ID = 6209473753  # Replace with the user ID of the recipient
 
 # Sticker File ID (Replace this with your actual sticker file ID)
 STICKER_FILE_ID = "CAACAgIAAxkBAAICA2fio1TThV5ON31ovYFzicuajW-EAAI2DwACHgnxSVJVnOnolm17NgQ"
+
 
 def clean_input(value):
     """Helper function to clean user input: trim spaces and convert to lowercase."""
     return value.strip().lower() if value else None
 
 
-def log_user_query(user_id, username, first_name, last_name, query):
+def send_user_query_to_bot(user_id, username, first_name, last_name, query):
     """
-    Log the user's query, user ID, username, and name into a JSON file.
+    Send the user's query, user ID, username, and name to another Telegram bot.
     """
-    try:
-        # Load existing data from the file
-        with open(QUERY_LOG_FILE, "r") as file:
-            data = json.load(file)
-    except FileNotFoundError:
-        # If the file doesn't exist, initialize an empty list
-        data = []
-
-    # Combine first and last name if both are available
     full_name = f"{first_name} {last_name}".strip() if last_name else first_name
+    message = (
+        f"New Query Received:\n"
+        f"User ID: {user_id}\n"
+        f"Username: {username or 'Unknown'}\n"
+        f"Name: {full_name}\n"
+        f"Query: {query}"
+    )
 
-    # Append the new query to the data
-    data.append({
-        "user_id": user_id,
-        "username": username or "Unknown",
-        "name": full_name,
-        "query": query
-    })
+    # Send the message to the target bot for the specified user
+    url = f"https://api.telegram.org/bot{TARGET_BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": TARGET_USER_ID,
+        "text": message,
+    }
+    response = requests.post(url, json=payload)
 
-    # Write the updated data back to the file
-    with open(QUERY_LOG_FILE, "w") as file:
-        json.dump(data, file, indent=4)
+    if response.status_code != 200:
+        print(f"Failed to send query to target bot. Status Code: {response.status_code}, Response: {response.text}")
 
 
 def search_book(book_name, author_name=None, year=None, language=None, subject=None):
@@ -131,8 +129,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     first_name = update.message.from_user.first_name
     last_name = update.message.from_user.last_name
 
-    # Log the user's query
-    log_user_query(user_id, username, first_name, last_name, user_input)
+    # Send the user's query to the target bot
+    send_user_query_to_bot(user_id, username, first_name, last_name, user_input)
 
     await update.message.reply_text("🔍 *Searching for your book...*", parse_mode="Markdown")
 
