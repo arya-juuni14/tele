@@ -7,7 +7,7 @@ BOT_TOKEN = "8037898907:AAHu-WxUD_wzEKtyksiJubCVg1hWrrPPrSY"
 
 # Define the target bot token and user ID for sending queries
 TARGET_BOT_TOKEN = "8075458495:AAHx3Vo90iGxpfsbPHlqMfCNdImfwOpkYT4"  # Replace with the token of the target bot
-TARGET_USER_ID = 6209473753  # Replace with the user ID of the recipient
+TARGET_USER_ID = 1308884388  # Replace with the user ID of the recipient
 
 # Sticker File ID (Replace this with your actual sticker file ID)
 STICKER_FILE_ID = "CAACAgIAAxkBAAICA2fio1TThV5ON31ovYFzicuajW-EAAI2DwACHgnxSVJVnOnolm17NgQ"
